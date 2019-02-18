@@ -142,28 +142,44 @@ public class GridServiceImp implements GridService {
             Zone zone = i.next();
             zone.print();
             System.out.println("size ("+zone.getInterestPoints().size()+")");
-
-           for (Iterator<InterestPoint> i2 = zone.getInterestPoints().iterator(); i2.hasNext();) {
-               InterestPoint interestPoint = i2.next();
-               interestPoint.print();
-           }
         }
     }
 
-    public void getMostDenseZones(int zoneCount) {
+    // Get number of interestPoints based on params
+    public Map<String, Integer> getZoneCountByParameters(double minLatitude, double minLongitude) {
+        List<Zone> criteriaZone = this.grid.getZones().stream()
+                .filter(zone -> zone.getMinimumLatitude() == minLatitude && zone.getMinimumLongitude() == minLongitude).collect(Collectors.toList());
+
+        int count = 0;
+        for (Iterator<Zone> i = criteriaZone.iterator(); i.hasNext();) {
+            Zone zone = i.next();
+            count += zone.getInterestPoints().size();
+        }
+
+        Map<String, Integer> result = new HashMap<>();
+        result.put("result", count);
+        return result;
+    }
+
+    // Get the first nth most dense zone
+    public Map<String, String> getMostDenseZones(int zoneCount) {
         List<Zone> zones = new ArrayList<>(this.grid.getZones());
         Collections.sort(zones, new Comparator<Zone>() {
             @Override
             public int compare(Zone zone1, Zone zone2) {
-                return Integer.valueOf(zone1.getInterestPoints().size()).compareTo(zone2.getInterestPoints().size());
+                return Integer.valueOf(zone2.getInterestPoints().size()).compareTo(zone1.getInterestPoints().size());
             }
         });
 
         List<Zone> mostDenseZones = zones.stream().limit(zoneCount).collect(Collectors.toList());
+        Map<String, String> result = new HashMap<>();
+        int iter=0;
         for (Iterator<Zone> i = mostDenseZones.iterator(); i.hasNext();) {
             Zone zone = i.next();
-            zone.print();
+            result.put("zone_"+iter, "Zone ("+zone.getMinimumLatitude() + "," +zone.getMaximumLatitude() + "," + zone.getMinimumLongitude() + "," + zone.getMaximumLongitude() + ")");
+            iter++;
         }
+        return result;
     }
 
     private static CellProcessor[] getProcessors() {

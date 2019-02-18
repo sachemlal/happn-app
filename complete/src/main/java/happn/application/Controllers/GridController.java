@@ -24,7 +24,6 @@ public class GridController {
     public Map grid(@RequestParam(value="name", defaultValue="World") String name) {
         gridService.readDataFile();
         gridService.printGridData();
-        gridService.getMostDenseZones(2);
         return gridService.getGrid().getResult();
     }
 
@@ -34,5 +33,18 @@ public class GridController {
         Map<String,Integer> result = new HashMap<>();
         result.put("result", gridService.somme(integer1, integer2));
         return result;
+    }
+
+    @RequestMapping("/grid/mostDenseZone")
+    public Map somme(@RequestParam(value="count") Integer count) {
+        gridService.readDataFile();
+        return gridService.getMostDenseZones(count);
+    }
+
+    @RequestMapping("/grid/countInterestPoints")
+    public Map somme(@RequestParam(value="minLatitude") Double minLatitude,
+                     @RequestParam(value="minLongitude") Double minLongitude) {
+        gridService.readDataFile();
+        return gridService.getZoneCountByParameters(minLatitude, minLongitude);
     }
 }

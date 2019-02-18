@@ -25,7 +25,7 @@ public class Grid {
         Grid.increment = increment;
     }
 
-    public Set<Zone> getZones() {
+    public HashSet<Zone> getZones() {
         return this.zones;
     }
 
