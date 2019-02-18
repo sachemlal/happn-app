@@ -43,7 +43,7 @@ public class GridServiceImp implements GridService {
             final CellProcessor[] processors = getProcessors();
             Map<String, Object> interestPointMap;
 
-            this.grid = new Grid(0.5);
+            this.grid = new Grid(Grid.getIncrement());
             while( (interestPointMap = mapReader.read(header, processors)) != null ) {
                 InterestPoint interestPoint = new InterestPoint((String)interestPointMap.get("@id"), (double)interestPointMap.get("@lon"), (double)interestPointMap.get("@lat"));
                 ArrayList newZones = generateZonesFromInterestPoint(interestPoint);
